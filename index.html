@@ -36,8 +36,8 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text);transition:background .15s;white-space:nowrap}
 .btn:hover{background:var(--bg);border-color:var(--border-strong)}
 .btn svg{width:14px;height:14px;flex-shrink:0}
-main{max-width:1200px;margin:0 auto;padding:28px 20px 80px}
-.week-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+main{max-width:1200px;margin:0 auto;padding:28px 20px 40px;min-height:calc(100vh - 56px);display:flex;flex-direction:column}
+.week-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;flex-shrink:0}
 .week-info{display:flex;align-items:center;gap:10px}
 .week-title{font-size:18px;font-weight:600;letter-spacing:-.03em;min-width:80px}
 .week-range{font-size:12px;color:var(--text-muted)}
@@ -50,10 +50,64 @@ main{max-width:1200px;margin:0 auto;padding:28px 20px 80px}
 .summary-chip{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:500;border:1px solid var(--border);background:var(--surface);color:var(--text-muted)}
 .summary-chip .dot{width:7px;height:7px;border-radius:50%}
 .summary-count{font-family:'DM Mono',monospace;color:var(--text)}
-.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
-@media(max-width:720px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:460px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.day-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 10px;min-height:160px;display:flex;flex-direction:column;gap:8px}
+/* ── 그리드 레이아웃 ── */
+.grid{display:grid;gap:8px;flex:1;grid-template-columns:repeat(7,minmax(0,1fr));align-content:stretch}
+.day-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:12px 10px;
+  display:flex;flex-direction:column;gap:8px;
+  min-height:0; /* 고정 min-height 제거 — 화면에 맞게 */
+}
+
+/* 태블릿 / 폴드 펼침 (가로 800px 이상, 세로가 긴 경우) */
+@media(min-width:800px) and (max-height:1000px){
+  .grid{grid-template-columns:repeat(7,minmax(0,1fr))}
+  .day-card{min-height:120px}
+}
+
+/* 폴드 펼침 세로 모드 (가로 600~900px, 세로 800px 이상) */
+@media(min-width:600px) and (max-width:900px) and (min-height:800px){
+  .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .day-card{min-height:0}
+}
+
+/* 가로 모드 (landscape) — 폰/폴드 공통 */
+@media(orientation:landscape) and (max-height:600px){
+  main{padding:10px 14px 12px;min-height:calc(100vh - 56px)}
+  .week-nav{margin-bottom:8px}
+  .summary{margin-bottom:8px;flex-shrink:0}
+  .grid{grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+  .day-card{padding:7px 5px;gap:4px}
+  .day-num{font-size:14px!important}
+  .tag{padding:2px 5px;font-size:9px}
+  .add-btn{padding:3px 4px;font-size:10px}
+}
+
+/* 폴드 가로 모드 (landscape, 넓은 화면) */
+@media(orientation:landscape) and (min-width:700px) and (max-height:600px){
+  .grid{grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+}
+
+/* 일반 태블릿 세로 */
+@media(min-width:900px){
+  .grid{grid-template-columns:repeat(7,minmax(0,1fr))}
+}
+
+/* 중간 화면 (폴드 접힘 / 작은 태블릿) */
+@media(max-width:720px) and (min-width:461px){
+  .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+
+/* 일반 스마트폰 */
+@media(max-width:460px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* 아주 작은 폰 */
+@media(max-width:360px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .day-card{padding:8px 6px}
+}
 .day-card.today{border-color:var(--today-border);background:var(--today-bg);border-width:1.5px}
 .day-head{display:flex;align-items:baseline;justify-content:space-between}
 .day-name{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em}
