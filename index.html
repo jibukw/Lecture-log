@@ -1305,14 +1305,21 @@ function showTip(text){
   clearTimeout(tipTimer);
   tipEl.textContent=text;
   const tw=Math.min(280,window.innerWidth-16);
-  const x=Math.max(8,(window.innerWidth-tw)/2);
-  const y=window.innerHeight-140;
-  tipEl.style.left=x+'px';
-  tipEl.style.top=y+'px';
   tipEl.style.maxWidth=tw+'px';
   tipEl.style.bottom='';
+  tipEl.style.opacity='0';
+  tipEl.style.display='block';
   tipVisible=true;
   tipEl.classList.add('show');
+  // 렌더 후 실제 높이 기반으로 중앙 배치
+  requestAnimationFrame(()=>{
+    const th=tipEl.offsetHeight;
+    const x=Math.max(8,(window.innerWidth-tw)/2);
+    const y=Math.max(8,(window.innerHeight-th)/2);
+    tipEl.style.left=x+'px';
+    tipEl.style.top=y+'px';
+    tipEl.style.opacity='';
+  });
 }
 function hideTip(){
   if(tipDragging)return;
