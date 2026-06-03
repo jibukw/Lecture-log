@@ -119,12 +119,12 @@ main{max-width:1200px;margin:0 auto;padding:28px 20px 40px;min-height:calc(100vh
 
 /* ── Dropdown panel ── */
 .dp{
-  position:fixed; /* fixed so it's never clipped by overflow:hidden parents */
+  position:fixed;
   background:var(--surface);border:1px solid var(--border-strong);
   border-radius:var(--radius);box-shadow:var(--shadow-lg);
-  z-index:400;width:300px;
+  z-index:400;
   display:none;flex-direction:column;overflow:hidden;
-  max-height:90vh; /* JS에서 동적으로 덮어씀 */
+  max-height:90vh;
 }
 .dp.open{display:flex}
 
@@ -549,11 +549,15 @@ function openDp(key,e){
   const aw=document.getElementById('aw-'+key);
   const rect=aw.getBoundingClientRect();
   const dp=document.getElementById('globalDp');
-  const margin=8; // 화면 끝에서 최소 여백
+  const margin=8;
 
-  // 좌우 위치
+  // 드롭다운 너비: 화면 너비 - 여백, 최대 300px
+  const dpWidth=Math.min(300, window.innerWidth - margin*2);
+  dp.style.width=dpWidth+'px';
+
+  // 좌우 위치: 카드 왼쪽 기준, 오른쪽으로 넘치면 오른쪽 정렬
   let left=rect.left;
-  if(left+310>window.innerWidth-margin) left=window.innerWidth-310-margin;
+  if(left+dpWidth>window.innerWidth-margin) left=window.innerWidth-dpWidth-margin;
   if(left<margin) left=margin;
   dp.style.left=left+'px';
 
