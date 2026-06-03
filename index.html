@@ -534,9 +534,12 @@ function renderTags(key){
     tag.className='tag';tag.style.background=col.bg;tag.style.color=col.text;
     const tipText=`[${c.name}]\n${ep}`;
     tag.innerHTML=`<span class="tag-text">${ep}</span><button class="tag-del" onclick="removeRec('${key}',${r.cid},${r.ei})">×</button>`;
-    tag.addEventListener('mouseenter',e=>showTip(e,tipText));
-    tag.addEventListener('mousemove',moveTip);
+    tag.addEventListener('mouseenter',e=>showTip(tipText));
     tag.addEventListener('mouseleave',hideTip);
+    tag.addEventListener('touchstart',e=>{
+      e.stopPropagation();
+      showTip(tipText);
+    },{passive:true});
     el.appendChild(tag);
   });
 }
@@ -1291,31 +1294,33 @@ function toggleLangPanel(e){
 
 // 언어 패널 바깥 클릭 닫기는 아래 document click에서 처리
 
-// ── Tooltip (드래그 가능) ──
+// ── Tooltip (드래그 가능, 터치 지원) ──
 const tipEl=document.getElementById('tip');
 let tipTimer;
 let tipDragging=false;
 let tipDragOX=0,tipDragOY=0;
+let tipVisible=false;
 
-function showTip(e,text){
+function showTip(text){
   clearTimeout(tipTimer);
   tipEl.textContent=text;
-  // 초기 위치: 화면 하단 중앙
   const tw=Math.min(280,window.innerWidth-16);
   const x=Math.max(8,(window.innerWidth-tw)/2);
-  const y=window.innerHeight-120;
+  const y=window.innerHeight-140;
   tipEl.style.left=x+'px';
   tipEl.style.top=y+'px';
   tipEl.style.maxWidth=tw+'px';
   tipEl.style.bottom='';
-  tipTimer=setTimeout(()=>tipEl.classList.add('show'),180);
+  tipVisible=true;
+  tipEl.classList.add('show');
 }
-function moveTip(e){}
 function hideTip(){
   if(tipDragging)return;
   clearTimeout(tipTimer);
   tipEl.classList.remove('show');
+  tipVisible=false;
 }
+function moveTip(){}
 
 // 마우스 드래그
 tipEl.addEventListener('mousedown',e=>{
@@ -1359,8 +1364,11 @@ tipEl.addEventListener('touchmove',e=>{
 tipEl.addEventListener('touchend',()=>{tipDragging=false;});
 
 // 툴팁 탭하면 닫기
-tipEl.addEventListener('click',()=>{
-  tipEl.classList.remove('show');
+tipEl.addEventListener('click',()=>{tipEl.classList.remove('show');tipVisible=false;});
+
+// 배경 탭하면 닫기
+document.addEventListener('click',e=>{
+  if(tipVisible&&!tipEl.contains(e.target))hideTip();
 });
 
 initTheme();
