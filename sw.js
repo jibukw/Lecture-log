@@ -1,4 +1,4 @@
-const CACHE = 'lecture-log-v15';
+const CACHE = 'lecture-log-v16';
 const ASSETS = [
   './index.html',
   './manifest.json',
