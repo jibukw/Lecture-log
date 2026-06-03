@@ -1310,6 +1310,7 @@ function showTip(text){
   tipEl.style.opacity='0';
   tipEl.style.display='block';
   tipVisible=true;
+  tipShownAt=Date.now();
   tipEl.classList.add('show');
   // 렌더 후 실제 높이 기반으로 중앙 배치
   requestAnimationFrame(()=>{
@@ -1373,9 +1374,12 @@ tipEl.addEventListener('touchend',()=>{tipDragging=false;});
 // 툴팁 탭하면 닫기
 tipEl.addEventListener('click',()=>{tipEl.classList.remove('show');tipVisible=false;});
 
-// 배경 탭하면 닫기
+// 배경 탭하면 닫기 (툴팁 뜬 직후 300ms 내 클릭 무시)
+let tipShownAt=0;
 document.addEventListener('click',e=>{
-  if(tipVisible&&!tipEl.contains(e.target))hideTip();
+  if(!tipVisible)return;
+  if(Date.now()-tipShownAt<400)return;
+  if(!tipEl.contains(e.target))hideTip();
 });
 
 initTheme();
